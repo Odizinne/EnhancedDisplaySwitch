@@ -8,12 +8,12 @@
 void displayHelp() {
     std::wcout << L"Usage: EnhancedDisplaySwitch.exe [option]\n";
     std::wcout << L"Options:\n";
-    std::wcout << L"  --clone       Set display mode to clone\n";
-    std::wcout << L"  --internal    Set display mode to internal\n";
-    std::wcout << L"  --external    Set display mode to external\n";
-    std::wcout << L"  --extend      Set display mode to extend\n";
-    std::wcout << L"  --lastmode    Show the last used mode\n";
-    std::wcout << L"  -h, --help    Display this help message\n";
+    std::wcout << L"  /internal or 1     Set display mode to internal\n";
+    std::wcout << L"  /clone    or 2     Set display mode to clone\n";
+    std::wcout << L"  /external or 3     Set display mode to external\n";
+    std::wcout << L"  /extend   or 4     Set display mode to extend\n";
+    std::wcout << L"  /lastmode or 5     Show the last used mode\n";
+    std::wcout << L"  -h, --help, /?     Display this help message\n";
 }
 
 void saveLastMode(const std::wstring& mode) {
@@ -50,7 +50,7 @@ std::wstring getLastMode() {
 
 void runDisplaySwitch(const std::wstring& mode) {
     std::wstring commandLine;
-    commandLine = L"displaySwitch.exe /" + mode.substr(2);
+    commandLine = L"displaySwitch.exe " + mode;
     LPWSTR commandLineW = const_cast<LPWSTR>(commandLine.c_str());
     std::wprintf(L"Running command: %s\n", commandLineW);
 
