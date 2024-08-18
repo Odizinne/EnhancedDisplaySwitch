@@ -49,33 +49,27 @@ std::wstring getLastMode() {
 }
 
 void runDisplaySwitch(const std::wstring& mode) {
-    std::wstring commandLine;
-    commandLine = L"displaySwitch.exe " + mode;
+    std::wstring commandLine = L"displaySwitch.exe " + mode;
     LPWSTR commandLineW = const_cast<LPWSTR>(commandLine.c_str());
     std::wprintf(L"Running command: %s\n", commandLineW);
 
     STARTUPINFO si = { sizeof(si) };
     PROCESS_INFORMATION pi;
 
-    BOOL result = CreateProcess(
+    CreateProcess(
         NULL,                  // No module name (use command line)
         commandLineW,          // Command line
         NULL,                  // Process handle not inheritable
         NULL,                  // Thread handle not inheritable
         FALSE,                 // Set handle inheritance to FALSE
-        0,                     // No creation flags
+        DETACHED_PROCESS,      // Creation flags (detached process)
         NULL,                  // Use parent's environment block
         NULL,                  // Use parent's starting directory
         &si,                   // Pointer to STARTUPINFO structure
         &pi                    // Pointer to PROCESS_INFORMATION structure
         );
 
-    if (result) {
-        WaitForSingleObject(pi.hProcess, INFINITE);
-
-        CloseHandle(pi.hProcess);
-        CloseHandle(pi.hThread);
-    } else {
-        std::wprintf(L"Failed to start displaySwitch.exe. Error: %lu\n", GetLastError());
-    }
+    // Close handles as they are no longer needed
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
 }
