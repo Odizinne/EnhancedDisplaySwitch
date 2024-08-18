@@ -7,6 +7,10 @@ Made for scripting and automation purpose.
 
 - [Microsoft Visual C++ Redistributable](https://aka.ms/vs/17/release/vc_redist.x64.exe)
 
+## Download
+
+You can get latest release [here](https://github.com/Odizinne/EnhancedDisplaySwitch/releases/latest).
+
 ## Usage
 
 Add it to your path or simply call it from where you need it.
