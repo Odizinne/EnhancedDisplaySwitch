@@ -82,15 +82,15 @@ jobs:
               exit 1
           }
 
-      - name: Zip binaries folder
-        run: |
-          $zipFile = "build/EnhancedDisplaySwitch_msvc_64.zip"
-          $folder = "build/EnhancedDisplaySwitch"
-          Compress-Archive -Path $folder -DestinationPath $zipFile
-        shell: pwsh
+      #- name: Zip binaries folder
+      #  run: |
+      #    $zipFile = "build/EnhancedDisplaySwitch_msvc_64.zip"
+      #    $folder = "build/EnhancedDisplaySwitch"
+      #    Compress-Archive -Path $folder -DestinationPath $zipFile
+      #  shell: pwsh
           
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: EnhancedDisplaySwitch_msvc_64
-          path: build/EnhancedDisplaySwitch_msvc_64.zip
+          path: build/EnhancedDisplaySwitch/
