@@ -11,7 +11,16 @@ Made for scripting and automation purpose.
 
 Add it to your path or simply call it from where you need it.
 
-- `--help`: Show available commands.
-- `--internal` / `--external` / `--extend` / `--clone`: call displayswitch.exe with specified arg.  
-Write set mode to `%appdata%\EnhancedDisplaySwitch\history.txt`.
-- `--lastmode`: print last set mode.
+```
+Usage: EnhancedDisplaySwitch.exe [option]
+Options:
+  /internal or 1     Set display mode to internal
+  /clone    or 2     Set display mode to clone
+  /external or 3     Set display mode to external
+  /extend   or 4     Set display mode to extend
+  /lastmode or 5     Show the last used mode
+  -h, --help, /?     Display this help message
+```
+
+When setting mode, EnhancedDisplaySwitch will create `%appdata%\EnhancedDisplaySwitch\history.txt` and save the last used mode inside the file.
+When `/lastmode` is used, file content will be returned.
