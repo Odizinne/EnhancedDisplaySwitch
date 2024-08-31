@@ -28,3 +28,8 @@ Options:
 
 When setting mode, EnhancedDisplaySwitch will create `%appdata%\EnhancedDisplaySwitch\history.txt` and save the last used mode inside the file.
 When `/lastmode` is used, file content will be returned.
+
+## Warning
+
+Do NOT try to replace windows original displayswitch with this program.  
+EnhancedDisplaySwitch is just a frontend for displayswitch and cannot work standalone
