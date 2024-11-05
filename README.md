@@ -26,8 +26,8 @@ Options:
   -h, --help, /?     Display this help message
 ```
 
-When setting mode, EnhancedDisplaySwitch will create `%appdata%\EnhancedDisplaySwitch\history.txt` and save the last used mode inside the file.
-When `/lastmode` is used, file content will be returned.
+When setting mode, EnhancedDisplaySwitch will create `HKEY_CURRENT_USER\Software\EnhancedDisplaySwitch\LastMode` and save the last used mode inside the string.
+When `/lastmode` is used, reg string content will be returned.
 
 ## Warning
 
