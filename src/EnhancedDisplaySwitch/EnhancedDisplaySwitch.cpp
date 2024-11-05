@@ -1,7 +1,6 @@
 #include "enhanceddisplayswitch.h"
 #include <windows.h>
 #include <iostream>
-#include <fstream>
 #include <string>
 #include <shlobj.h>
 
@@ -17,36 +16,43 @@ void displayHelp() {
 }
 
 void saveLastMode(const std::wstring& mode) {
-    wchar_t appDataPath[MAX_PATH];
-    if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_APPDATA, NULL, 0, appDataPath))) {
-        std::wstring historyFilePath = std::wstring(appDataPath) + L"\\EnhancedDisplaySwitch\\history.txt";
-        std::wstring historyDir = std::wstring(appDataPath) + L"\\EnhancedDisplaySwitch";
-        CreateDirectoryW(historyDir.c_str(), NULL);
-        std::wofstream historyFile(historyFilePath, std::ios::out | std::ios::trunc);
-        if (historyFile.is_open()) {
-            historyFile << mode;
-            historyFile.close();
-        }
+    HKEY hKey;
+    // Define the registry path
+    std::wstring subKey = L"SOFTWARE\\EnhancedDisplaySwitch";
+
+    // Create or open the registry key
+    if (RegCreateKeyExW(HKEY_CURRENT_USER, subKey.c_str(), 0, NULL, 0, KEY_WRITE, NULL, &hKey, NULL) == ERROR_SUCCESS) {
+        // Set the value of "LastMode" in the registry
+        RegSetValueExW(hKey, L"LastMode", 0, REG_SZ, (const BYTE*)mode.c_str(), (mode.size() + 1) * sizeof(wchar_t));
+        // Close the registry key
+        RegCloseKey(hKey);
     }
 }
 
 std::wstring getLastMode() {
-    wchar_t appDataPath[MAX_PATH];
-    if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_APPDATA, NULL, 0, appDataPath))) {
-        std::wstring historyFilePath = std::wstring(appDataPath) + L"\\EnhancedDisplaySwitch\\history.txt";
+    HKEY hKey;
+    // Define the registry path
+    std::wstring subKey = L"SOFTWARE\\EnhancedDisplaySwitch";
+    std::wstring mode;
 
-        std::wifstream historyFile(historyFilePath);
-        if (historyFile.is_open()) {
-            std::wstring mode;
-            std::getline(historyFile, mode);
-            historyFile.close();
-            if (!mode.empty()) {
-                return mode;
-            }
+    // Open the registry key
+    if (RegOpenKeyExW(HKEY_CURRENT_USER, subKey.c_str(), 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
+        wchar_t buffer[256];
+        DWORD bufferSize = sizeof(buffer);
+
+        // Query the value of "LastMode" from the registry
+        if (RegQueryValueExW(hKey, L"LastMode", NULL, NULL, (LPBYTE)buffer, &bufferSize) == ERROR_SUCCESS) {
+            mode = buffer;
         }
+
+        // Close the registry key
+        RegCloseKey(hKey);
     }
-    return L"No last mode found.";
+
+    // Check if mode was retrieved, otherwise return a default message
+    return mode.empty() ? L"No last mode found." : mode;
 }
+
 
 void runDisplaySwitch(const std::wstring& mode) {
     std::wstring commandLine = L"displaySwitch.exe " + mode;

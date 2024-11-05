@@ -13,6 +13,6 @@ SOURCES += \
 HEADERS += \
         src/EnhancedDisplaySwitch/EnhancedDisplaySwitch.h
 
-LIBS += -lShell32
+LIBS += -lShell32 -lAdvapi32
 
 QMAKE_CXXFLAGS += -DUNICODE -D_UNICODE
