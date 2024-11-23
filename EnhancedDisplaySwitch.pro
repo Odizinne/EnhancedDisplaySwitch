@@ -3,16 +3,13 @@ CONFIG += console c++17
 CONFIG -= app_bundle
 CONFIG -= qt
 
-INCLUDEPATH += \
-        src/EnhancedDisplaySwitch
-
 SOURCES += \
-        src/EnhancedDisplaySwitch/EnhancedDisplaySwitch.cpp \
-        src/main.cpp
+        EnhancedDisplaySwitch.cpp \
+        main.cpp
 
 HEADERS += \
-        src/EnhancedDisplaySwitch/EnhancedDisplaySwitch.h
+        EnhancedDisplaySwitch.h
 
-LIBS += -luser32
+LIBS += -luser32 -ladvapi32
 
 QMAKE_CXXFLAGS += -DUNICODE -D_UNICODE

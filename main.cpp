@@ -1,4 +1,4 @@
-#include "enhanceddisplayswitch.h"
+#include "EnhancedDisplaySwitch.h"
 #include <iostream>
 #include <string>
 
@@ -12,21 +12,17 @@ int wmain(int argc, wchar_t* argv[])
     std::wstring arg = argv[1];
 
     if (arg == L"-h" || arg == L"--help" || arg == L"/?") {
-        displayHelp();
+        EDS::displayHelp();
     } else if (arg == L"/internal" || arg == L"1") {
-        runDisplaySwitch(1);
-        saveLastMode(L"internal");
+        EDS::runDisplaySwitch(1);
     } else if (arg == L"/clone" || arg == L"2") {
-        runDisplaySwitch(2);
-        saveLastMode(L"clone");
+        EDS::runDisplaySwitch(2);
     } else if (arg == L"/extend" || arg == L"3") {
-        runDisplaySwitch(3);
-        saveLastMode(L"extend");
+       EDS:: runDisplaySwitch(3);
     } else if (arg == L"/external" || arg == L"4") {
-        runDisplaySwitch(4);
-        saveLastMode(L"external");
+        EDS::runDisplaySwitch(4);
     } else if (arg == L"/lastmode" || arg == L"5") {
-        std::wcout << getLastMode() << std::endl;
+        std::wcout << EDS::getLastMode() << std::endl;
     } else {
         std::wcerr << L"Invalid argument. Use /? -h or --help for usage information.\n";
         return 1;
