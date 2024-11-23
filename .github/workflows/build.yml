@@ -26,20 +26,6 @@ jobs:
           cmake -DCMAKE_BUILD_TYPE=Release ..
           cmake --build . --config Release
 
-      - name: Remove source and object files
-        shell: pwsh
-        run: |
-          # Define the directory
-          $buildDir = "build/Release"
-
-          # Check if the directory exists
-          if (Test-Path $buildDir) {
-              # Remove .obj and .pdb files
-              Get-ChildItem -Path $buildDir -Include *.obj, *.pdb -Recurse | Remove-Item -Force
-          } else {
-              Write-Host "Directory not found: $buildDir"
-          }
-
       - name: Rename release folder
         shell: pwsh
         run: |
@@ -52,15 +38,16 @@ jobs:
               exit 1
           }
 
-      #- name: Zip binaries folder
-      #  run: |
-      #    $zipFile = "build/EnhancedDisplaySwitch_msvc_64.zip"
-      #    $folder = "build/EnhancedDisplaySwitch"
-      #    Compress-Archive -Path $folder -DestinationPath $zipFile
-      #  shell: pwsh
-
+      - name: Zip binaries folder
+        run: |
+          $zipFile = "build/EnhancedDisplaySwitch_msvc_64.zip"
+          $folder = "build/EnhancedDisplaySwitch"
+          Compress-Archive -Path $folder -DestinationPath $zipFile
+        shell: pwsh
+          
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: EnhancedDisplaySwitch_msvc_64
-          path: build/EnhancedDisplaySwitch/
+          path: build/EnhancedDisplaySwitch_msvc_64.zip
+
