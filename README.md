@@ -1,6 +1,6 @@
 # EnhancedDisplaySwitch
 
-displayswitch.exe wrapper providing access to last used command.  
+`DisplaySwitch.exe` alternative providing access to last used command.  
 Made for scripting and automation purpose.
 
 ## Requirements
@@ -29,7 +29,3 @@ Options:
 When setting mode, EnhancedDisplaySwitch will create `HKEY_CURRENT_USER\Software\EnhancedDisplaySwitch\LastMode` and save the last used mode inside the string.
 When `/lastmode` is used, reg string content will be returned.
 
-## Warning
-
-Do NOT try to replace windows original displayswitch with this program.  
-EnhancedDisplaySwitch is just a frontend for displayswitch and cannot work standalone
