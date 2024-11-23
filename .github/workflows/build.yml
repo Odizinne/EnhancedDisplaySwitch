@@ -18,54 +18,24 @@ jobs:
         with:
           arch: x64
 
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v4
-        with:
-          version: '6.7.2'
-          add-tools-to-path: true
-
-      - name: Install jom
-        id: jom-setup
-        shell: pwsh
-        run: |
-          $url = "https://download.qt.io/official_releases/jom/jom_1_1_4.zip"
-          $outputPath = "jom_1_1_4.zip"
-          Invoke-WebRequest -Uri $url -OutFile $outputPath
-          $extractPath = "jom"
-          if (-not (Test-Path $extractPath)) {
-            New-Item -ItemType Directory -Path $extractPath | Out-Null
-          }
-          Expand-Archive -Path $outputPath -DestinationPath $extractPath
-          $jomDir = "$(pwd)\jom"
-          $jomExe = "$jomDir\jom.exe"
-          if (Test-Path $jomExe) {
-            Write-Output "JOM Path: $jomDir"
-            Write-Output "::set-output name=jom_path::$jomDir"
-          } else {
-            Write-Error "jom.exe not found in $jomDir"
-            exit 1
-          }
-
-      - name: Build with qmake and jom
+      - name: Configure and build with CMake
         shell: pwsh
         run: |
           mkdir build
           cd build
-          qmake ..\EnhancedDisplaySwitch.pro CONFIG+=release
-          # Use the JOM path variable
-          $jomPath = "${{ steps.jom-setup.outputs.jom_path }}"
-          & "$jomPath\jom.exe"
+          cmake -DCMAKE_BUILD_TYPE=Release ..
+          cmake --build . --config Release
 
       - name: Remove source and object files
         shell: pwsh
         run: |
           # Define the directory
-          $buildDir = "build/release"
+          $buildDir = "build/Release"
 
           # Check if the directory exists
           if (Test-Path $buildDir) {
-              # Remove .cpp, .h, .obj, and .res files
-              Get-ChildItem -Path $buildDir -Include *.cpp, *.h, *.obj, *.res -Recurse | Remove-Item -Force
+              # Remove .obj and .pdb files
+              Get-ChildItem -Path $buildDir -Include *.obj, *.pdb -Recurse | Remove-Item -Force
           } else {
               Write-Host "Directory not found: $buildDir"
           }
@@ -73,7 +43,7 @@ jobs:
       - name: Rename release folder
         shell: pwsh
         run: |
-          $releaseDir = "build/release"
+          $releaseDir = "build/Release"
           $newDir = "EnhancedDisplaySwitch"
           if (Test-Path $releaseDir) {
               Rename-Item -Path $releaseDir -NewName $newDir
@@ -88,7 +58,7 @@ jobs:
       #    $folder = "build/EnhancedDisplaySwitch"
       #    Compress-Archive -Path $folder -DestinationPath $zipFile
       #  shell: pwsh
-          
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
