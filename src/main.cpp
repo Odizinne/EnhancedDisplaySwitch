@@ -14,17 +14,17 @@ int wmain(int argc, wchar_t* argv[])
     if (arg == L"-h" || arg == L"--help" || arg == L"/?") {
         displayHelp();
     } else if (arg == L"/internal" || arg == L"1") {
-        runDisplaySwitch(L"/internal");
+        runDisplaySwitch(1);
         saveLastMode(L"internal");
     } else if (arg == L"/clone" || arg == L"2") {
-        runDisplaySwitch(L"/clone");
+        runDisplaySwitch(2);
         saveLastMode(L"clone");
-    } else if (arg == L"/external" || arg == L"3") {
-        runDisplaySwitch(L"/external");
-        saveLastMode(L"external");
-    } else if (arg == L"/extend" || arg == L"4") {
-        runDisplaySwitch(L"/extend");
+    } else if (arg == L"/extend" || arg == L"3") {
+        runDisplaySwitch(3);
         saveLastMode(L"extend");
+    } else if (arg == L"/external" || arg == L"4") {
+        runDisplaySwitch(4);
+        saveLastMode(L"external");
     } else if (arg == L"/lastmode" || arg == L"5") {
         std::wcout << getLastMode() << std::endl;
     } else {

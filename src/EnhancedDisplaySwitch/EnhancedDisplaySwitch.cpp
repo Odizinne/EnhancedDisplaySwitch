@@ -17,65 +17,62 @@ void displayHelp() {
 
 void saveLastMode(const std::wstring& mode) {
     HKEY hKey;
-    // Define the registry path
     std::wstring subKey = L"SOFTWARE\\EnhancedDisplaySwitch";
 
-    // Create or open the registry key
     if (RegCreateKeyExW(HKEY_CURRENT_USER, subKey.c_str(), 0, NULL, 0, KEY_WRITE, NULL, &hKey, NULL) == ERROR_SUCCESS) {
-        // Set the value of "LastMode" in the registry
-        RegSetValueExW(hKey, L"LastMode", 0, REG_SZ, (const BYTE*)mode.c_str(), (mode.size() + 1) * sizeof(wchar_t));
-        // Close the registry key
+        RegSetValueExW(hKey, L"LastMode", 0, REG_SZ, (const BYTE*)mode.c_str(), static_cast<DWORD>((mode.size() + 1) * sizeof(wchar_t)));
         RegCloseKey(hKey);
     }
 }
 
 std::wstring getLastMode() {
     HKEY hKey;
-    // Define the registry path
     std::wstring subKey = L"SOFTWARE\\EnhancedDisplaySwitch";
     std::wstring mode;
 
-    // Open the registry key
     if (RegOpenKeyExW(HKEY_CURRENT_USER, subKey.c_str(), 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
         wchar_t buffer[256];
         DWORD bufferSize = sizeof(buffer);
 
-        // Query the value of "LastMode" from the registry
         if (RegQueryValueExW(hKey, L"LastMode", NULL, NULL, (LPBYTE)buffer, &bufferSize) == ERROR_SUCCESS) {
             mode = buffer;
         }
 
-        // Close the registry key
         RegCloseKey(hKey);
     }
 
-    // Check if mode was retrieved, otherwise return a default message
     return mode.empty() ? L"No last mode found." : mode;
 }
 
+void runDisplaySwitch(int mode) {
+    LONG result = ERROR_SUCCESS;
 
-void runDisplaySwitch(const std::wstring& mode) {
-    std::wstring commandLine = L"displaySwitch.exe " + mode;
-    LPWSTR commandLineW = const_cast<LPWSTR>(commandLine.c_str());
-    std::wprintf(L"Running command: %s\n", commandLineW);
+    switch (mode) {
+    case 1:
+        result = SetDisplayConfig(0, NULL, 0, NULL, SDC_TOPOLOGY_INTERNAL | SDC_APPLY);
+        break;
 
-    STARTUPINFO si = { sizeof(si) };
-    PROCESS_INFORMATION pi;
+    case 2:
+        result = SetDisplayConfig(0, NULL, 0, NULL, SDC_TOPOLOGY_CLONE | SDC_APPLY);
+        break;
 
-    CreateProcess(
-        NULL,                  // No module name (use command line)
-        commandLineW,          // Command line
-        NULL,                  // Process handle not inheritable
-        NULL,                  // Thread handle not inheritable
-        FALSE,                 // Set handle inheritance to FALSE
-        DETACHED_PROCESS,      // Creation flags (detached process)
-        NULL,                  // Use parent's environment block
-        NULL,                  // Use parent's starting directory
-        &si,                   // Pointer to STARTUPINFO structure
-        &pi                    // Pointer to PROCESS_INFORMATION structure
-        );
+    case 3:
+        result = SetDisplayConfig(0, NULL, 0, NULL, SDC_TOPOLOGY_EXTEND | SDC_APPLY);
+        break;
 
-    // Close handles as they are no longer needed
-    CloseHandle(pi.hProcess);
-    CloseHandle(pi.hThread);
+    case 4:
+        result = SetDisplayConfig(0, NULL, 0, NULL, SDC_TOPOLOGY_EXTERNAL | SDC_APPLY);
+        break;
+
+    default:
+        std::cerr << "Invalid mode selected.\n";
+        return;
+    }
+
+    if (result == ERROR_SUCCESS) {
+        return;
+    } else {
+        std::cerr << "Failed to set display configuration. Error: " << result << "\n";
+        return;
+    }
 }
